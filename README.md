@@ -1,90 +1,226 @@
-## 平台简介
+## 若依项目阅读记录
 
-一直想做一款后台管理系统，看了很多优秀的开源项目但是发现没有合适的。于是利用空闲休息时间开始自己写了一套后台系统。如此有了若依。她可以用于所有的Web应用程序，如网站管理后台，网站会员中心，CMS，CRM，OA。所有前端后台代码封装过后十分精简易上手，出错概率低。同时支持移动客户端访问。系统会陆续更新一些实用功能。
+### 前言
 
-性别男，若依是给女儿取的名字（寓意：你若不离不弃，我必生死相依）
+[项目源码地址](https://gitee.com/y_project/RuoYi)
 
-若依是一套全部开源的快速开发平台，毫无保留给个人及企业免费使用。
+### 2020/11/16
 
-* 前后端分离版本，请移步[RuoYi-Vue](https://gitee.com/y_project/RuoYi-Vue)，微服务版本，请移步[RuoYi-Cloud](https://gitee.com/y_project/RuoYi-Cloud)
-* 感谢 [hplus](https://gitee.com/hplus_admin/hplus) 后台主题 UI 框架。
-* 阿里云折扣场：[点我进入](http://aly.ruoyi.vip)，腾讯云秒杀场：[点我进入](http://txy.ruoyi.vip)&nbsp;&nbsp;
-* 阿里云优惠券：[点我领取](https://www.aliyun.com/minisite/goods?userCode=brki8iof&share_source=copy_link)，腾讯云优惠券：[点我领取](https://cloud.tencent.com/redirect.php?redirect=1025&cps_key=198c8df2ed259157187173bc7f4f32fd&from=console)&nbsp;&nbsp;
+#### 创建订单模块CRUD
 
-## 内置功能
+##### 1. 创建数据库表`gok_order`
 
-1.  用户管理：用户是系统操作者，该功能主要完成系统用户配置。
-2.  部门管理：配置系统组织机构（公司、部门、小组），树结构展现支持数据权限。
-3.  岗位管理：配置系统用户所属担任职务。
-4.  菜单管理：配置系统菜单，操作权限，按钮权限标识等。
-5.  角色管理：角色菜单权限分配、设置角色按机构进行数据范围权限划分。
-6.  字典管理：对系统中经常使用的一些较为固定的数据进行维护。
-7.  参数管理：对系统动态配置常用参数。
-8.  通知公告：系统通知公告信息发布维护。
-9.  操作日志：系统正常操作日志记录和查询；系统异常信息日志记录和查询。
-10. 登录日志：系统登录日志记录查询包含登录异常。
-11. 在线用户：当前系统中活跃用户状态监控。
-12. 定时任务：在线（添加、修改、删除)任务调度包含执行结果日志。
-13. 代码生成：前后端代码的生成（java、html、xml、sql）支持CRUD下载 。
-14. 系统接口：根据业务代码自动生成相关的api接口文档。
-15. 服务监控：监视当前系统CPU、内存、磁盘、堆栈等相关信息。
-16. 在线构建器：拖动表单元素生成相应的HTML代码。
-17. 连接池监视：监视当前系统数据库连接池状态，可进行分析SQL找出系统性能瓶颈。
+```sql
+create table gok_order
+(
+    id                int auto_increment comment 'id'
+        primary key,
+    order_id          varchar(64)  not null comment '订单号',
+    order_content     varchar(255) not null comment '订单内容',
+    order_amount      varchar(20)  not null comment '订单金额',
+    order_create_time date         not null comment '订单创建时间',
+    order_paid_time   date         not null comment '订单支付时间',
+    user_id           int          not null comment '订单消费人',
+    order_status      int          not null comment '订单状态',
+    constraint gok_order_order_id_uindex
+        unique (order_id)
+)
+    comment '订单表';
+```
 
-## 在线体验
+##### 2. 利用若依提供的代码生成工具生成对应代码
 
-- admin/admin123  
-- 陆陆续续收到一些打赏，为了更好的体验已用于演示服务器升级。谢谢各位小伙伴。
+- 导入表及结构
 
-演示地址：http://ruoyi.vip  
-文档地址：http://doc.ruoyi.vip
+![生成代码](https://cdn.jsdelivr.net/gh/qinwant/Figurebed/img/20201116161123.png)
 
-## 演示图
+- 编辑配置相关信息，生成代码
+- 解压并添加文件到对应项目结构
+  - 将生成的`controller`放到`ruoyi-admin`的`controller`文件夹下
+  - 将生成的`domain、service、mapper`放到`ruoyi-system`的对应文件夹下
+  - 将生成的`resources`放到`ruoyi-admin`的`resources`文件夹下
+- 重启项目，查看是否嵌入进去
+  - 失败，发现没有显示
+  - 失败原因：只生成了业务代码，前端没有展示
+  - 解决方案：菜单管理--系统管理--添加新的菜单管理项（“gok订单管理”）
 
-<table>
-    <tr>
-        <td><img src="https://oscimg.oschina.net/oscnet/up-42e518aa72a24d228427a1261cb3679f395.png"/></td>
-        <td><img src="https://oscimg.oschina.net/oscnet/up-7f20dd0edba25e5187c5c4dd3ec7d3d9797.png"/></td>
-    </tr>
-    <tr>
-        <td><img src="https://oscimg.oschina.net/oscnet/up-2dae3d87f6a8ca05057db059cd9a411d51d.png"/></td>
-        <td><img src="https://oscimg.oschina.net/oscnet/up-ea4d98423471e55fba784694e45d12bd4bb.png"/></td>
-    </tr>
-    <tr>
-        <td><img src="https://oscimg.oschina.net/oscnet/up-7f6c6e9f5873efca09bd2870ee8468b8fce.png"/></td>
-        <td><img src="https://oscimg.oschina.net/oscnet/up-c708b65f2c382a03f69fe1efa8d341e6cff.png"/></td>
-    </tr>
-	<tr>
-        <td><img src="https://oscimg.oschina.net/oscnet/up-9ab586c47dd5c7b92bca0d727962c90e3b8.png"/></td>
-        <td><img src="https://oscimg.oschina.net/oscnet/up-ef954122a2080e02013112db21754b955c6.png"/></td>
-    </tr>	 
-    <tr>
-        <td><img src="https://oscimg.oschina.net/oscnet/up-088edb4d531e122415a1e2342bccb1a9691.png"/></td>
-        <td><img src="https://oscimg.oschina.net/oscnet/up-f886fe19bd820c0efae82f680223cac196c.png"/></td>
-    </tr>
-	<tr>
-        <td><img src="https://oscimg.oschina.net/oscnet/up-c7a2eb71fa65d6e660294b4bccca613d638.png"/></td>
-        <td><img src="https://oscimg.oschina.net/oscnet/up-e60137fb0787defe613bd83331dc4755a70.png"/></td>
-    </tr>
-	<tr>
-        <td><img src="https://oscimg.oschina.net/oscnet/up-7c51c1b5758f0a0f92ed3c60469b7526f9f.png"/></td>
-        <td><img src="https://oscimg.oschina.net/oscnet/up-15181aed45bb2461aa97b594cbf2f86ea5f.png"/></td>
-    </tr>
-	<tr>
-        <td><img src="https://oscimg.oschina.net/oscnet/up-83326ad52ea63f67233d126226738054d98.png"/></td>
-        <td><img src="https://oscimg.oschina.net/oscnet/up-3bd6d31e913b70df00107db51d64ef81df7.png"/></td>
-    </tr>
-	<tr>
-        <td><img src="https://oscimg.oschina.net/oscnet/up-70a2225836bc82042a6785edf6299e2586a.png"/></td>
-        <td><img src="https://oscimg.oschina.net/oscnet/up-0184d6ab01fdc6667a14327fcaf8b46345d.png"/></td>
-    </tr>
-	<tr>
-        <td><img src="https://oscimg.oschina.net/oscnet/up-64d8086dc2c02c8f71170290482f7640098.png"/></td>
-        <td><img src="https://oscimg.oschina.net/oscnet/up-6d73c2140ce694e3de4c05035fdc1868d4c.png"/></td>
-    </tr>
-</table>
+![image-20201116163903814](https://cdn.jsdelivr.net/gh/qinwant/Figurebed/img/20201116163905.png)
+
+- 检测功能是否完成
+
+  - 失败，发现页面报错
+
+  > `org.thymeleaf.exceptions.TemplateInputException:` Error resolving template [system/order/order], template might not exist or might not be accessible by any of the configured Template Resolvers
+
+  - 失败原因：渲染路径错误，多了一个order
+  - 解决方案：检查路径（无错误）；检查`target`发现没有对应文件，`rebulid`重新构建项目
+
+- 功能测试
+
+  ![image-20201116192202280](https://cdn.jsdelivr.net/gh/qinwant/Figurebed/img/20201116192204.png)
+
+#### 前端页面阅读笔记（`user.html`）
+
+- 引入`thymeleaf`
+- 引入`shiro`
+
+```html
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+```
+
+- `th:include`：只插入片段的内容
+
+```html
+<th:block th:include="include :: header('用户列表')" />
+<!--往当前页面插入include.html中的一个叫做header的片段th:fragment -->
+```
+
+#### 半程自我总结
+
+##### 1. 项目整体认知
+
+- 还处于比较模糊的理解阶段
+- 模块有点多，理解起来比较吃力
+  - `mybaits`中的`mapper`
+  - `template`中的渲染
+  - 导入、导出、字典等功能整合起来不知如何下手
+  
+  ### 2020/11/15
+  
+  #### 略读“前端手册”模块
+  
+  - 前端比较看不懂
+  
+  #### 找到用户管理的CRUD实现
+  
+  ##### 定位
+  
+  - 全局搜索`user`，定位到`ruoyi-admin`模块`web.controller.system`下的`SysUserController`
+  
+  ##### 简单分析
+  
+  - 与之关联的`service`：用户、角色、岗位、密码
+  - `@RequiresPermissions("system:user:view")`：`shiro`注解
+  - `@Log(title = "用户管理", businessType = BusinessType.EXPORT)`：自定义的日志
+  - `.stream().filter(r -> !r.isAdmin())`：java8新特性
+  
+  #### 理清CRUD实现逻辑
+  
+  - 添加用户
+    - 弹出新增用户页面，填充信息，跳转新增页面
+    - 参数校验，`shiro`加盐，存入数据库
+  - 删除用户
+    - 按照`id`删除（假删）
+  - 修改用户
+    - 类似添加用户
+  - 查找用户
 
 
-## 若依交流群
+### 2020/11/14
 
-QQ群： [![加入QQ群](https://img.shields.io/badge/已满-1389287-blue.svg)](https://jq.qq.com/?_wv=1027&k=5HBAaYN)  [![加入QQ群](https://img.shields.io/badge/已满-1679294-blue.svg)](https://jq.qq.com/?_wv=1027&k=5cHeRVW)  [![加入QQ群](https://img.shields.io/badge/已满-1529866-blue.svg)](https://jq.qq.com/?_wv=1027&k=53R0L5Z)  [![加入QQ群](https://img.shields.io/badge/已满-1772718-blue.svg)](https://jq.qq.com/?_wv=1027&k=5g75dCU)  [![加入QQ群](https://img.shields.io/badge/已满-1366522-blue.svg)](https://jq.qq.com/?_wv=1027&k=58cPoHA)  [![加入QQ群](https://img.shields.io/badge/已满-1382251-blue.svg)](https://jq.qq.com/?_wv=1027&k=5Ofd4Pb)  [![加入QQ群](https://img.shields.io/badge/已满-1145125-blue.svg)](https://jq.qq.com/?_wv=1027&k=5yugASz)  [![加入QQ群](https://img.shields.io/badge/已满-86752435-blue.svg)](https://jq.qq.com/?_wv=1027&k=5Rf3d2P)  [![加入QQ群](https://img.shields.io/badge/已满-134072510-blue.svg)](https://jq.qq.com/?_wv=1027&k=5ZIjaeP)  [![加入QQ群](https://img.shields.io/badge/已满-210336300-blue.svg)](https://jq.qq.com/?_wv=1027&k=5CJw1jY)  [![加入QQ群](https://img.shields.io/badge/已满-339522636-blue.svg)](https://jq.qq.com/?_wv=1027&k=5omzbKc)  [![加入QQ群](https://img.shields.io/badge/130035985-blue.svg)](https://jq.qq.com/?_wv=1027&k=qPIKBb7s)
+#### 略读若依"后台手册"
+
+- 分页：`pagehelper`
+- 导入导出：自定义注解`@Excel`
+- 权限注解
+- 事务处理
+- 异常处理`@ControllerAdvice`
+
+#### 理清项目结构模块
+
+后台服务主要在`ruoyi-admin`模块下
+
+对照昨天的项目模块分析即可
+
+#### 寻找项目入口，debug调试
+
+#####  1. 页面入口
+
+![image-20201114203711403](https://cdn.jsdelivr.net/gh/qinwant/Figurebed/img/20201114203714.png)
+
+![image-20201114203533385](https://cdn.jsdelivr.net/gh/qinwant/Figurebed/img/20201114203536.png)
+
+##### 2. 登陆成功后，会根据权限初始化主页内容
+
+![image-20201114203815616](https://cdn.jsdelivr.net/gh/qinwant/Figurebed/img/20201114204158.png)
+
+### 2020/11/13
+
+#### 目标分解
+
+##### 搭建项目本地运行环境
+
+- maven环境
+- jdk环境
+- 大多都是`maven`依赖，配置难度较小
+
+##### 部署运行本地项目
+
+- 从码云下载项目压缩包，本地解压导入
+- 根据sql文件创建本地数据库`ry`
+- 修改项目数据库配置信息
+
+```yml
+master:
+    url: jdbc:mysql://localhost:3306/ry?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
+    username: root
+    password: ****
+```
+
+- 运行项目（本地成功部署）
+
+<img src="https://cdn.jsdelivr.net/gh/qinwant/Figurebed/img/20201113213047.png" alt="image-20201113212933323" style="zoom: 80%;" />
+
+##### 阅读若依系统官方手册"项目模块介绍"
+
+- 文件结构（模块化）
+
+```xml
+com.ruoyi     
+├── common            // 工具类
+│       └── annotation                    // 自定义注解
+│       └── config                        // 全局配置
+│       └── constant                      // 通用常量
+│       └── core                          // 核心控制
+│       └── enums                         // 通用枚举
+│       └── exception                     // 通用异常
+│       └── json                          // JSON数据处理
+│       └── utils                         // 通用类处理
+│       └── xss                           // XSS过滤处理
+├── framework         // 框架核心
+│       └── aspectj                       // 注解实现
+│       └── config                        // 系统配置
+│       └── datasource                    // 数据权限
+│       └── interceptor                   // 拦截器
+│       └── manager                       // 异步处理
+│       └── shiro                         // 权限控制
+│       └── util                          // 通用工具
+│       └── web                           // 前端控制
+├── ruoyi-generator   // 代码生成（可移除）
+├── ruoyi-quartz      // 定时任务（可移除）
+├── ruoyi-system      // 系统代码
+├── ruoyi-admin       // 后台服务
+├── ruoyi-xxxxxx      // 其他模块
+```
+
+![image-20201113213433645](https://cdn.jsdelivr.net/gh/qinwant/Figurebed/img/20201113213435.png)
+
+- 核心技术
+  - springboot框架
+  - shiro安全控制
+  - thymeleaf模板
+
+##### 总结反馈
+
+- 部署较顺利
+- 项目属于父子多模块工程，之前没有接触过，理解起来有点吃力
+- 虽然能看见一些`controller-service-dao`的痕迹，不过模块化的设计还不理解为什么要这么设计，得研究一下。
+- 项目内容庞大，一时半会还消化不了。模块有点多，很多都没接触过。
+- 前端也有点看不懂，好像是动态读取的。。。
+
+- 计划：
+  - 先找点`shiro`的资料看一下
+  - 接下来以登陆账户为引，找到项目入口，`debug`看一下执行流程
+
+
+

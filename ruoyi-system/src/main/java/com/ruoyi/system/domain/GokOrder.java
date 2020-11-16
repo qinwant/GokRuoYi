@@ -1,15 +1,16 @@
 package com.ruoyi.system.domain;
 
-import java.util.Date;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.core.domain.BaseEntity;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+
+import java.util.Date;
 
 /**
  * 订单对象 gok_order
- * 
- * @author kingwan
+ *
+ * @author ruoyi
  * @date 2020-11-16
  */
 public class GokOrder extends BaseEntity
@@ -39,85 +40,72 @@ public class GokOrder extends BaseEntity
     @Excel(name = "订单支付时间", width = 30, dateFormat = "yyyy-MM-dd")
     private Date orderPaidTime;
 
-    /** 订单消费人 */
-    @Excel(name = "订单消费人")
+    /** 消费者id */
+    @Excel(name = "消费者id")
     private Long userId;
 
-    /** 订单状态 */
-    @Excel(name = "订单状态")
-    private Long orderStatus;
-
-    public void setId(Long id) 
+    public void setId(Long id)
     {
         this.id = id;
     }
 
-    public Long getId() 
+    public Long getId()
     {
         return id;
     }
-    public void setOrderId(String orderId) 
+    public void setOrderId(String orderId)
     {
         this.orderId = orderId;
     }
 
-    public String getOrderId() 
+    public String getOrderId()
     {
         return orderId;
     }
-    public void setOrderContent(String orderContent) 
+    public void setOrderContent(String orderContent)
     {
         this.orderContent = orderContent;
     }
 
-    public String getOrderContent() 
+    public String getOrderContent()
     {
         return orderContent;
     }
-    public void setOrderAmount(String orderAmount) 
+    public void setOrderAmount(String orderAmount)
     {
         this.orderAmount = orderAmount;
     }
 
-    public String getOrderAmount() 
+    public String getOrderAmount()
     {
         return orderAmount;
     }
-    public void setOrderCreateTime(Date orderCreateTime) 
+    public void setOrderCreateTime(Date orderCreateTime)
     {
         this.orderCreateTime = orderCreateTime;
     }
 
-    public Date getOrderCreateTime() 
+    public Date getOrderCreateTime()
     {
         return orderCreateTime;
     }
-    public void setOrderPaidTime(Date orderPaidTime) 
+    public void setOrderPaidTime(Date orderPaidTime)
     {
         this.orderPaidTime = orderPaidTime;
     }
 
-    public Date getOrderPaidTime() 
+    public Date getOrderPaidTime()
     {
         return orderPaidTime;
     }
-    public void setUserId(Long userId) 
+    public void setUserId(Long userId)
     {
         this.userId = userId;
     }
 
-    public Long getUserId() 
+    public Long getUserId()
     {
         return userId;
-    }
-    public void setOrderStatus(Long orderStatus) 
-    {
-        this.orderStatus = orderStatus;
-    }
-
-    public Long getOrderStatus() 
-    {
-        return orderStatus;
     }
 
     @Override
@@ -130,7 +118,6 @@ public class GokOrder extends BaseEntity
             .append("orderCreateTime", getOrderCreateTime())
             .append("orderPaidTime", getOrderPaidTime())
             .append("userId", getUserId())
-            .append("orderStatus", getOrderStatus())
             .toString();
     }
 }

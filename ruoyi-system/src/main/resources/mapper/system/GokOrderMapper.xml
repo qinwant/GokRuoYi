@@ -12,11 +12,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="orderCreateTime"    column="order_create_time"    />
         <result property="orderPaidTime"    column="order_paid_time"    />
         <result property="userId"    column="user_id"    />
-        <result property="orderStatus"    column="order_status"    />
     </resultMap>
 
     <sql id="selectGokOrderVo">
-        select id, order_id, order_content, order_amount, order_create_time, order_paid_time, user_id, order_status from gok_order
+        select id, order_id, order_content, order_amount, order_create_time, order_paid_time, user_id from gok_order
     </sql>
 
     <select id="selectGokOrderList" parameterType="GokOrder" resultMap="GokOrderResult">
@@ -28,7 +27,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="orderCreateTime != null "> and order_create_time = #{orderCreateTime}</if>
             <if test="orderPaidTime != null "> and order_paid_time = #{orderPaidTime}</if>
             <if test="userId != null "> and user_id = #{userId}</if>
-            <if test="orderStatus != null "> and order_status = #{orderStatus}</if>
         </where>
     </select>
     
@@ -46,7 +44,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="orderCreateTime != null">order_create_time,</if>
             <if test="orderPaidTime != null">order_paid_time,</if>
             <if test="userId != null">user_id,</if>
-            <if test="orderStatus != null">order_status,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="orderId != null and orderId != ''">#{orderId},</if>
@@ -55,7 +52,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="orderCreateTime != null">#{orderCreateTime},</if>
             <if test="orderPaidTime != null">#{orderPaidTime},</if>
             <if test="userId != null">#{userId},</if>
-            <if test="orderStatus != null">#{orderStatus},</if>
          </trim>
     </insert>
 
@@ -68,7 +64,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="orderCreateTime != null">order_create_time = #{orderCreateTime},</if>
             <if test="orderPaidTime != null">order_paid_time = #{orderPaidTime},</if>
             <if test="userId != null">user_id = #{userId},</if>
-            <if test="orderStatus != null">order_status = #{orderStatus},</if>
         </trim>
         where id = #{id}
     </update>

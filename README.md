@@ -4,6 +4,136 @@
 
 [项目源码地址](https://gitee.com/y_project/RuoYi)
 
+### 2020/11/20
+
+
+#### 商品管理demo
+
+> 目标：实现导入电子表格文件自动解析导入商品（导入功能），并且显示是可以显示图片
+>实际完成情况：大部分完成，原本想电子表格存图片，读取的时候上传到图床返回url，后来没实现，直接在表格用url了。
+
+##### 1. 创建商品表
+
+```sql
+create table gok_goods
+(
+    id                int auto_increment comment 'id'
+    primary key,
+    good_id           varchar(20)  null comment '商品编号',
+    good_name         varchar(50)  null comment '商品名称',
+    good_price        decimal      null comment '商品价格',
+    good_image        varchar(100) null comment '商品图片',
+    good_created_time datetime     null comment '商品生产日期',
+    good_status       int          null comment '商品状态'
+)
+    comment '商品表';
+```
+
+##### 2. 代码生成
+
+-  创建商品菜单
+
+![image-20201120232800012](https://cdn.jsdelivr.net/gh/qinwant/Figurebed/img/20201120232802.png)
+
+- 导入表，编辑信息
+
+![image-20201120232917088](https://cdn.jsdelivr.net/gh/qinwant/Figurebed/img/20201120232918.png)
+
+- 生成代码，导入项目
+
+![image-20201120233206319](https://cdn.jsdelivr.net/gh/qinwant/Figurebed/img/20201120233207.png)
+
+##### 3. 项目模块配置
+
+- 依赖配置
+
+```xml
+<!--  在ruoyi-admin的pom.xml配置新模块依赖  -->
+<dependency>
+    <groupId>com.ruoyi</groupId>
+    <artifactId>rouyi-goods</artifactId>
+    <version>4.5.0</version>
+</dependency>
+
+<!--  在ruoyi-goods的pom.xml配置通用依赖  -->
+<!-- 通用工具-->
+<dependency>
+    <groupId>com.ruoyi</groupId>
+    <artifactId>ruoyi-common</artifactId>
+</dependency>
+```
+
+
+
+##### 4.界面优化
+
+- 配置导入功能
+
+```java
+//bootstrap-table中添加两个参数
+importUrl: prefix + "/importData",
+importTemplateUrl: prefix + "/importTemplate",
+```
+
+- 配置文件导入模板脚本
+
+```javascript
+<script id="importTpl" type="text/template">
+         <form enctype="multipart/form-data" class="mt20 mb10">
+             <div class="col-xs-offset-1">
+                 <input type="file" id="file" name="file"/>
+                 <div class="mt10 pt5">
+                     <input type="checkbox" id="updateSupport" name="updateSupport" title="如果数据已经存在，更新这条数据。"> 是否更新已经存在的数据
+                     &nbsp;    <a onclick="$.table.importTemplate()" class="btn btn-default btn-xs"><i class="fa fa-file-excel-o"></i> 下载模板</a>
+                 </div>
+                 <font color="red" class="pull-left mt10">
+                     提示：仅允许导入“xls”或“xlsx”格式文件！
+                 </font>
+             </div>
+         </form>
+     </script>
+```
+
+- 配置导入按钮显示
+
+```java
+{
+    field: 'goodImage',
+    title: '商品图片',
+    formatter: function (value,row,index) {
+        var s = [];
+        if(row.goodImage!=null){
+            var url = row.goodImage;
+            s.push('<a class = "view"  href="javascript:void(0)"><img style="width:100px;height:100px;"  src="'+url+'" /></a>');
+        }
+        return s.join('');
+    },
+```
+
+- 后台`controller`(去除了`shiro`)
+
+```java
+@Log(title = "商品", businessType = BusinessType.IMPORT)
+@PostMapping("/importData")
+@ResponseBody
+public AjaxResult importData(MultipartFile file, boolean updateSupport) throws Exception
+{
+    ExcelUtil<GokGoods> util = new ExcelUtil<GokGoods>(GokGoods.class);
+    List<GokGoods> goodList = util.importExcel(file.getInputStream());
+    String message = gokGoodsService.importGoods(goodList, updateSupport);
+    return AjaxResult.success(message);
+}
+```
+
+##### 5. 效果
+
+![image-20201120234410106](https://cdn.jsdelivr.net/gh/qinwant/Figurebed/img/20201120234411.png)
+
+![image-20201120234457088](https://cdn.jsdelivr.net/gh/qinwant/Figurebed/img/20201120234458.png)
+
+![image-20201120234538181](https://cdn.jsdelivr.net/gh/qinwant/Figurebed/img/20201120234539.png)
+
+
 ### 2020/11/17
 
 #### 1. 前端精读

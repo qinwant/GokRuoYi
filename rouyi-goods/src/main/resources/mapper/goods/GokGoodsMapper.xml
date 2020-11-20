@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.goods.mapper.GokGoodsMapper">
+
+    <resultMap type="GokGoods" id="GokGoodsResult">
+        <result property="id"    column="id"    />
+        <result property="goodId"    column="good_id"    />
+        <result property="goodName"    column="good_name"    />
+        <result property="goodPrice"    column="good_price"    />
+        <result property="goodImage"    column="good_image"    />
+        <result property="goodCreatedTime"    column="good_created_time"    />
+        <result property="goodStatus"    column="good_status"    />
+    </resultMap>
+
+    <sql id="selectGokGoodsVo">
+        select id, good_id, good_name, good_price, good_image, good_created_time, good_status from gok_goods
+    </sql>
+
+    <select id="selectGokGoodsList" parameterType="GokGoods" resultMap="GokGoodsResult">
+        <include refid="selectGokGoodsVo"/>
+        <where>
+            <if test="goodId != null  and goodId != ''"> and good_id = #{goodId}</if>
+            <if test="goodName != null  and goodName != ''"> and good_name like concat('%', #{goodName}, '%')</if>
+            <if test="goodPrice != null "> and good_price = #{goodPrice}</if>
+            <if test="goodImage != null  and goodImage != ''"> and good_image = #{goodImage}</if>
+            <if test="goodCreatedTime != null "> and good_created_time = #{goodCreatedTime}</if>
+            <if test="goodStatus != null "> and good_status = #{goodStatus}</if>
+        </where>
+    </select>
+
+    <select id="selectGokGoodsById" parameterType="Long" resultMap="GokGoodsResult">
+        <include refid="selectGokGoodsVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertGokGoods" parameterType="GokGoods" useGeneratedKeys="true" keyProperty="id">
+        insert into gok_goods
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="goodId != null">good_id,</if>
+            <if test="goodName != null">good_name,</if>
+            <if test="goodPrice != null">good_price,</if>
+            <if test="goodImage != null">good_image,</if>
+            <if test="goodCreatedTime != null">good_created_time,</if>
+            <if test="goodStatus != null">good_status,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="goodId != null">#{goodId},</if>
+            <if test="goodName != null">#{goodName},</if>
+            <if test="goodPrice != null">#{goodPrice},</if>
+            <if test="goodImage != null">#{goodImage},</if>
+            <if test="goodCreatedTime != null">#{goodCreatedTime},</if>
+            <if test="goodStatus != null">#{goodStatus},</if>
+         </trim>
+    </insert>
+
+    <update id="updateGokGoods" parameterType="GokGoods">
+        update gok_goods
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="goodId != null">good_id = #{goodId},</if>
+            <if test="goodName != null">good_name = #{goodName},</if>
+            <if test="goodPrice != null">good_price = #{goodPrice},</if>
+            <if test="goodImage != null">good_image = #{goodImage},</if>
+            <if test="goodCreatedTime != null">good_created_time = #{goodCreatedTime},</if>
+            <if test="goodStatus != null">good_status = #{goodStatus},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteGokGoodsById" parameterType="Long">
+        delete from gok_goods where id = #{id}
+    </delete>
+
+    <delete id="deleteGokGoodsByIds" parameterType="String">
+        delete from gok_goods where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

@@ -225,7 +225,8 @@
         <module>ruoyi-quartz</module>
         <module>ruoyi-generator</module>
         <module>ruoyi-common</module>
-        <module>ruoyi-gokorder</module>
+<!--        <module>ruoyi-gokorder</module>-->
+        <module>rouyi-goods</module>
     </modules>
     <packaging>pom</packaging>
 
